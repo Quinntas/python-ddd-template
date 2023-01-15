@@ -1,0 +1,12 @@
+uvicorn
+python-decouple
+starlette
+fastapi
+passlib
+jwt
+pytz
+requests
+mysql-connector-python
+itsdangerous
+email-validator
+python-multipart
