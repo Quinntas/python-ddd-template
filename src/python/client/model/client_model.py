@@ -7,10 +7,10 @@ from pydantic import BaseModel, EmailStr, Field
 class Client(BaseModel):
     id: Optional[int]
     uuid: Optional[str] = Field(default=uuid4().__str__())
-    name: str
+    name: str = Field(..., min_length=3)
     email: EmailStr
     email_verified_at: Optional[str] = Field(default="")
-    password: str
+    password: str = Field(..., min_length=6)
     phone_number: str
     avatar: str
     created_at: Optional[str]
