@@ -17,6 +17,12 @@ _jwk = jwk_from_dict({
 })
 
 
+class JWTResponse:
+    def __init__(self, is_expired: bool, payload: dict = None):
+        self.is_expired = is_expired
+        self.payload = payload
+
+
 def token_response(token_payload: str) -> dict:
     return {
         "token": token_payload
@@ -26,7 +32,6 @@ def token_response(token_payload: str) -> dict:
 def sign_jwt(payload: dict, exp_time: int = 6) -> dict:
     token_payload = {
         "payload": payload,
-        "iss": None,
         "iat": get_int_from_datetime(datetime.utcnow()),
         "exp": get_int_from_datetime(datetime.utcnow() + timedelta(hours=exp_time))
     }
@@ -34,13 +39,11 @@ def sign_jwt(payload: dict, exp_time: int = 6) -> dict:
     return token_response(token)
 
 
-def decode_jwt(token_payload: str):
+def decode_jwt(token_payload: str) -> JWTResponse | None:
     try:
         decode_token = jwt_instance.decode(message=token_payload, key=_jwk, do_time_check=True, do_verify=True)
-        return decode_token
-    except jwt.exceptions.JWTDecodeError as error:
-        print(error)
-        return None
-    except jwt.exceptions.JWSDecodeError as error:
-        print(error)
+        if decode_token['exp'] < get_int_from_datetime(datetime.utcnow()):
+            return JWTResponse(is_expired=True)
+        return JWTResponse(is_expired=False, payload=decode_token['payload'])
+    except jwt.exceptions.JWTDecodeError:
         return None
