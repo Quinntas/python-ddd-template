@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from starlette.middleware.sessions import SessionMiddleware
 
 from src.python.client.router.client_router import client
+from src.python.shared.infra.database.prisma_handler import prisma
 # from src.python.shared.infra.database.database import database as db
 from src.python.shared.responses.json_response import json_response
 from src.python.shared.utils.log import log_internal_server_error
@@ -44,7 +45,7 @@ async def about():
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
-    return FileResponse('../../data/icon.ico')
+    return FileResponse('data/icon.ico')
 
 
 @app.exception_handler(404)
@@ -91,14 +92,16 @@ async def validation_error(request: Request, exception: RequestValidationError) 
 
 # Events
 @app.on_event('startup')
-async def shutdown():
-    pass
+async def startup():
+    print('[DATABASE] Connecting to the database')
+    await prisma.connect()
     # await log_it("Application starting up", LOG_PATH)
 
 
 @app.on_event('shutdown')
 async def shutdown():
-    pass
+    print('[DATABASE] Disconnecting to the database')
+    await prisma.disconnect()
     # await log_it("Application shutting down", LOG_PATH)
 
 

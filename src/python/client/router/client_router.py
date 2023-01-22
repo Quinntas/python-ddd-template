@@ -1,20 +1,25 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import HTTPBasic, OAuth2PasswordRequestForm
 
-from src.python.client.model.client_model import Client
+from src.python.client.domain.client_model import Client
 from src.python.client.validation.client_validation import validate_client
-from src.python.shared.encryption.encryption import gen_pbkdf2_sha256, verify_encryption
-from src.python.shared.encryption.jwt_handler import sign_jwt, decode_jwt
-from src.python.shared.infra.database.database import database as db
-from src.python.shared.infra.database.enums.databases import Databases
-from src.python.shared.infra.database.enums.tables import Tables
+from src.python.shared.encryption.encryption import gen_pbkdf2_sha256
+from src.python.shared.infra.database.prisma_handler import prisma
 from src.python.shared.responses.json_response import json_response
-from src.python.shared.utils.model_loader import _list_loader
 from src.python.shared.utils.time_handler import get_curr_dt
+from src.python.user.mapper.user_mapper import to_model, to_dict
 
 client = APIRouter()
 
 security = HTTPBasic()
+
+
+@client.get("/test")
+async def tests():
+    # a = await prisma.user.create(data={'name': '123123','email': '123123@gmail.com','password': '412312',})
+    a = await prisma.user.find_unique(where={'publicId': 'a581f9c1-035d-4812-8431-874f5052f984'})
+    n = to_model(a)
+    return json_response(to_dict(n))
 
 
 @client.post("/")
@@ -27,7 +32,7 @@ async def create(_client: Client):
     _client.created_at = current_dt
     _client.updated_at = current_dt
 
-    await db.insert_value(Tables.clients.value, Databases.delivery.value, _client.get_dict())
+    # await db.insert_value(Tables.clients.value, Databases.delivery.value, _client.get_dict())
 
     return json_response(_client.default_response(), status_code=201)
 
@@ -39,16 +44,17 @@ async def get(_client: Client = Depends(validate_client)):
 
 @client.put("/")
 async def put(__client: Client, _client: Client = Depends(validate_client)):
-    await db.update_value(Tables.clients.value, Databases.delivery.value, __client.put_response(),
-                          {'uuid': _client.uuid})
-    _client = __client
-    return json_response(_client.put_response())
+    # await db.update_value(Tables.clients.value, Databases.delivery.value, __client.put_response(),
+    #                     {'uuid': _client.uuid})
+    # _client = __client
+    # return json_response(_client.put_response())
+    pass
 
 
 @client.patch("/verify_email")
 async def verify_email(_client: Client = Depends(validate_client)):
-    await db.update_value(Tables.clients.value, Databases.delivery.value, {'email_verified_at': get_curr_dt()},
-                          {'uuid': _client.uuid})
+    # await db.update_value(Tables.clients.value, Databases.delivery.value, {'email_verified_at': get_curr_dt()},
+    #                      {'uuid': _client.uuid})
     return json_response({'message': 'email verified'})
 
 
@@ -63,8 +69,8 @@ async def change_password(request: Request, _client: Client = Depends(validate_c
     if len(body['password']) < 6:
         raise HTTPException(400, detail='password must be at least 6 characters long')
     new_password = gen_pbkdf2_sha256(body['password'])
-    await db.update_value(Tables.clients.value, Databases.delivery.value, {'password': new_password},
-                          {'uuid': _client.uuid})
+    # await db.update_value(Tables.clients.value, Databases.delivery.value, {'password': new_password},
+    #                      {'uuid': _client.uuid})
     return json_response({'message': 'password changed'})
 
 
@@ -73,17 +79,17 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(security)):
     if form_data.username == "" or form_data.password == "":
         raise HTTPException(401)
 
-    client_info = await db.select_from_params(Tables.clients.value, Databases.delivery.value,
-                                              {"email": form_data.username}, 'ONE')
+    # client_info = await db.select_from_params(Tables.clients.value, Databases.delivery.value,
+    #                                          {"email": form_data.username}, 'ONE')
 
-    if client_info is None:
-        raise HTTPException(404)
+    # if client_info is None:
+    #    raise HTTPException(404)
 
-    _client = _list_loader(Client, client_info)
+    # _client = _list_loader(Client, client_info)
 
-    if verify_encryption(form_data.password, _client.password) is False:
-        raise HTTPException(401)
+    # if verify_encryption(form_data.password, _client.password) is False:
+    #    raise HTTPException(401)
 
-    token = sign_jwt({'uuid': _client.uuid})
-    print(decode_jwt(token['token']))
-    return json_response(token)
+    # token = sign_jwt({'uuid': _client.uuid})
+    # print(decode_jwt(token['token']))
+    # return json_response(token)
