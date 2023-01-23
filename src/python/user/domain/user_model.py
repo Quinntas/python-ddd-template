@@ -20,5 +20,8 @@ class User(BaseModel):
     updated_at: SharedDatetime
 
     class Config:
-        validate_assignment = True
         arbitrary_types_allowed = True
+
+    @staticmethod
+    def get_private_attributes() -> list:
+        return ['id', 'password']

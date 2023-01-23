@@ -2,17 +2,22 @@ from pydantic import BaseModel
 
 from src.python.client.domain.client_avatar import ClientAvatar
 from src.python.client.domain.client_phone_number import ClientPhoneNumber
+from src.python.shared.domain.shared_datetime import SharedDatetime
 from src.python.shared.domain.shared_uuid import SharedUUID
 
 
 class Client(BaseModel):
     id: int
-    uuid: SharedUUID
+    publicId: SharedUUID
     phone_number: ClientPhoneNumber
-    avatar_number: ClientAvatar
     userId: int
-    created_at: str
-    updated_at: str
+    avatar: ClientAvatar
+    createdAt: SharedDatetime
+    updatedAt: SharedDatetime
 
     class Config:
         arbitrary_types_allowed = True
+
+    @staticmethod
+    def get_private_attributes() -> list:
+        return ['id', 'userId']

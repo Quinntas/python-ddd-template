@@ -45,12 +45,12 @@ async def about():
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
-    return FileResponse('data/icon.ico')
+    return FileResponse('../../data/icon.ico')
 
 
 @app.exception_handler(404)
 def item_not_found(request: Request, exception: HTTPException) -> JSONResponse:
-    return json_response({"error": "item not found"}, status_code=404)
+    return json_response({"error": "item not found", "details": exception.detail}, status_code=401)
 
 
 @app.exception_handler(401)
@@ -133,4 +133,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    pass
+    # main()

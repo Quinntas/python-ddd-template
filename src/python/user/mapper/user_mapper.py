@@ -25,8 +25,11 @@ def to_model(user) -> User:
 
 def to_dict(_user: User) -> dict:
     return_value = {}
-    user_dict = _user.dict()
+    user_dict: dict = _user.dict()
+    private_attributes: list = User.get_private_attributes()
     for key in user_dict.keys():
+        if key in private_attributes:
+            continue
         if ValueObject in user_dict[key].__class__.__mro__:
             return_value[key] = user_dict[key].get_value()
             continue
