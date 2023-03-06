@@ -23,7 +23,7 @@ def to_dict(_client: Client) -> dict:
     return_value = {}
     client_dict: dict = _client.dict()
     private_attributes: list = Client.get_private_attributes()
-    for key in client_dict.keys():
+    for key in client_dict:
         if key in private_attributes:
             continue
         if ValueObject in client_dict[key].__class__.__mro__:

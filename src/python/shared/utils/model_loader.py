@@ -21,5 +21,5 @@ def _list_loader(t: Type[Model], o: list) -> Model:
     if o is None:
         raise HTTPException(status_code=400, detail='Someting went wrong.')
     if len(keys) != len(o):
-        raise ValueError(f'Missing values')
+        raise ValueError('Missing values')
     return t(**dict(zip(keys, o)))

@@ -43,3 +43,4 @@ setuptools~=65.5.0
 packaging~=23.0
 pyparsing~=3.0.9
 zipp~=3.11.0
+ruff

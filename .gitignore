@@ -8,6 +8,8 @@ __pycache__/
 
 .idea
 
+.ruff_cache
+
 # Distribution / packaging
 .Python
 build/

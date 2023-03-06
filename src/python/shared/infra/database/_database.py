@@ -13,7 +13,7 @@ class DatabaseController(object):
 
     @staticmethod
     def get_keys(data: dict) -> str:
-        return ', '.join(key for key in data.keys())
+        return ', '.join(key for key in data)
 
     @staticmethod
     def wrap(value: any) -> str:
@@ -113,8 +113,8 @@ class DatabaseController(object):
 
     async def create_table_from_dict(self, table_name: str, database_name: str, data: dict) -> str:
         if "SCHEMA" not in data:
-            return f"No SCHEMA found"
-        attributes = ', '.join(f"{key} {data['SCHEMA'][key]}" for key in data['SCHEMA'].keys())
+            return "No SCHEMA found"
+        attributes = ', '.join(f"{key} {data['SCHEMA'][key]}" for key in data['SCHEMA'])
         if 'FOREIGN_KEYS' in data:
             attributes += (f", FOREIGN KEY ({f_key}) REFERENCES {data['FOREIGN_KEYS'][f_key]['REFERENCES']}" for f_key
                            in data['FOREIGN_KEYS'])
