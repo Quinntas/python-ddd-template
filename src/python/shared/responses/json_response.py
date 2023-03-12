@@ -9,4 +9,6 @@ def json_response(content: dict, content_lang: str = 'en-US', content_type: str 
         "content-type": content_type,
         "cache-control": 'no-cache, no-store'
     }
+    if status_code == 204:
+        return JSONResponse(headers=headers, status_code=status_code)
     return JSONResponse(content=content, headers=headers, status_code=status_code)

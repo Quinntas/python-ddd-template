@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
-from src.python.client.domain.client_model import Client
+from src.python.client.domain.client import Client
 from src.python.client.mapper.client_mapper import to_model
 from src.python.client.repo.client_repo import get_client_with_public_id
 from src.python.shared.encryption.jwt_handler import decode_jwt
@@ -20,6 +20,6 @@ async def validate_client(token=Depends(oauth2_scheme)) -> Client:
     elif jwt_response.is_expired:
         raise HTTPException(401, detail="token expired", headers={"WWW-Authenticate": "Bearer"})
 
-    _client = await get_client_with_public_id(jwt_response.payload['public_id'])
+    _client = await get_client_with_public_id(jwt_response.payload['client_public_id'])
 
     return to_model(_client)

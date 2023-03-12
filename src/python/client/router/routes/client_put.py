@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from src.python.client.domain.client import Client
 from src.python.client.domain.client_avatar import ClientAvatar
-from src.python.client.domain.client_model import Client
 from src.python.client.domain.client_phone_number import ClientPhoneNumber
 from src.python.client.dto.update_client_dto import UpdateClientDTO
 from src.python.client.repo.client_repo import put_client
@@ -23,4 +23,4 @@ async def put(__client: UpdateClientDTO, _client: Client = Depends(validate_clie
     except ValueObjectException as error:
         raise HTTPException(400, detail=error.error_value)
     await put_client(__client, _client.publicId.get_value())
-    return json_response({'success': True})
+    return json_response({'success': True}, status_code=204)

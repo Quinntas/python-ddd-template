@@ -1,5 +1,5 @@
+from src.python.client.domain.client import Client
 from src.python.client.domain.client_avatar import ClientAvatar
-from src.python.client.domain.client_model import Client
 from src.python.client.domain.client_phone_number import ClientPhoneNumber
 from src.python.shared.core.value_object.value_object import ValueObject
 from src.python.shared.domain.shared_datetime import SharedDatetime

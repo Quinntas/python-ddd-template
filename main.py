@@ -11,11 +11,11 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from src.python.client.router.client_router import client
 from src.python.shared.infra.database.prisma_handler import prisma
-# from src.python.shared.infra.database.database import database as db
 from src.python.shared.responses.json_response import json_response
 from src.python.shared.utils.log import log_internal_server_error
 
 SESSION_SECRET = config('SESSION_SECRET')
+PORT = config('PORT')
 
 app = FastAPI(
     title="Delivery",
@@ -45,12 +45,12 @@ async def about():
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
-    return FileResponse('../../data/icon.ico')
+    return FileResponse('data/icon.ico')
 
 
 @app.exception_handler(404)
 def item_not_found(request: Request, exception: HTTPException) -> JSONResponse:
-    return json_response({"error": "item not found", "details": exception.detail}, status_code=401)
+    return json_response({"error": "item not found", "details": exception.detail}, status_code=404)
 
 
 @app.exception_handler(401)
@@ -95,6 +95,7 @@ async def validation_error(request: Request, exception: RequestValidationError) 
 async def startup():
     print('[DATABASE] Connecting to the database')
     await prisma.connect()
+    print(f'[APP] App is running on {PORT}')
     # await log_it("Application starting up", LOG_PATH)
 
 
@@ -102,6 +103,7 @@ async def startup():
 async def shutdown():
     print('[DATABASE] Disconnecting to the database')
     await prisma.disconnect()
+    print('[APP] App is shut down')
     # await log_it("Application shutting down", LOG_PATH)
 
 
@@ -127,9 +129,7 @@ app.include_router(
 
 def main():
     host = socket.gethostbyname(socket.gethostname())
-    port = 5000
-
-    uvicorn.run("main:app", host=host, port=port, server_header=False)
+    uvicorn.run("main:app", host=host, port=PORT, server_header=False)
 
 
 if __name__ == "__main__":
