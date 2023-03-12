@@ -4,7 +4,6 @@ from src.python.shared.infra.database.prisma_handler import prisma
 
 
 async def create_client(new_client: NewClientDTO):
-    print(new_client.__dict__)
     return await prisma.client.create(
         data={
             'phone_number': new_client.phone_number,

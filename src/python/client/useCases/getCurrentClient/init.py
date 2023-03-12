@@ -1,0 +1,5 @@
+from src.python.client.useCases.getCurrentClient.get_current_client_controller import LoginController
+from src.python.client.useCases.getCurrentClient.get_current_client_usecase import GetCurrentClientUseCase
+
+get_current_client_usecase = GetCurrentClientUseCase()
+get_current_client_controller = LoginController(get_current_client_usecase)

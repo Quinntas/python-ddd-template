@@ -5,7 +5,6 @@ from src.python.shared.encryption.encryption import gen_pbkdf2_sha256
 
 
 class CreateClientUseCase(UseCase):
-    @staticmethod
-    async def execute(new_client: NewClientDTO):
+    async def execute(self, new_client: NewClientDTO):
         new_client.password = gen_pbkdf2_sha256(new_client.password)
         await create_client(new_client)
