@@ -9,7 +9,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, FileResponse
 from starlette.middleware.sessions import SessionMiddleware
 
-from src.python.client.router.client_router import client
+from src.python.client.infra.http.routes.client_router import client
 from src.python.shared.infra.database.prisma_handler import prisma
 from src.python.shared.responses.json_response import json_response
 from src.python.shared.utils.log import log_internal_server_error

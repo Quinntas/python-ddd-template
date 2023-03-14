@@ -1,4 +1,7 @@
-class BaseController:
-    @staticmethod
-    async def execute(*args, **kwargs):
+from abc import ABC, abstractmethod
+
+
+class BaseController(ABC):
+    @abstractmethod
+    async def execute(self, *args, **kwargs):
         pass

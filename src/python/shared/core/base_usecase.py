@@ -1,4 +1,7 @@
-class UseCase:
-    @staticmethod
-    async def execute(*args, **kwargs):
-        return
+from abc import ABC, abstractmethod
+
+
+class UseCase(ABC):
+    @abstractmethod
+    async def execute(self, *args, **kwargs):
+        pass
