@@ -5,12 +5,12 @@ from src.python.client.useCases.getCurrentClient.init import get_current_client_
 from src.python.client.useCases.login.init import login_controller
 from src.python.client.useCases.updateClient.init import update_client_controller
 
-client = APIRouter()
+client_router = APIRouter()
 
-client.post("/create")(create_client_controller.execute)
+client_router.post("/create")(create_client_controller.execute)
 
-client.post("/login")(login_controller.execute)
+client_router.post("/login")(login_controller.execute)
 
-client.get("/getCurrent")(get_current_client_controller.execute)
+client_router.get("/getCurrent")(get_current_client_controller.execute)
 
-client.put("/update")(update_client_controller.execute)
+client_router.put("/update")(update_client_controller.execute)

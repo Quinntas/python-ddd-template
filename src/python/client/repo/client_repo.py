@@ -9,7 +9,7 @@ async def create_client(new_client: NewClientDTO):
             'phone_number': new_client.phone_number,
             'avatar': new_client.avatar,
             'user': {
-                'createClient': {
+                'create': {
                     'name': new_client.name,
                     'email': new_client.email,
                     'password': new_client.password
