@@ -19,6 +19,8 @@
 
 ## Built in endpoints
 
+#### Client
+
 | METHOD 	|  RESOURCE  	|          FULL URL         	|
 |:------:	|:----------:	|:-------------------------:	|
 | POST   	| CREATE     	| /api/v1/client/create     	|
