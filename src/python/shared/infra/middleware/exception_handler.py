@@ -69,9 +69,9 @@ class ExceptionHandler(BaseHTTPMiddleware):
         except HTTPException as error:
             return http_exception_handler(error.status_code, error.detail)
 
-        except ValueObjectException:
+        except ValueObjectException as e:
             return bad_request({
-                "message": "missing the following fields",
+                "message": e.error_value,
             })
 
         except Exception:
