@@ -24,6 +24,11 @@
 | METHOD 	|  RESOURCE  	|          FULL URL         	|
 |:------:	|:----------:	|:-------------------------:	|
 | POST   	| CREATE     	| /api/v1/client/create     	|
-| POST   	| LOGIN      	| /api/v1/client/login      	|
 | GET    	| GETCURRENT 	| /api/v1/client/getCurrent 	|
-| PUT    	| UPDATE     	| /api/v1/client/update     	|
+
+#### User
+
+| METHOD 	|  RESOURCE  	|          FULL URL         	|
+|:------:	|:----------:	|:-------------------------:	|
+| POST   	| LOGIN      	| /api/v1/user/login      	|
+| GET    	| GETCURRENT 	| /api/v1/user/getCurrent 	|
