@@ -1,15 +1,15 @@
-from src.python.shared.infra.database.prisma_handler import prisma
+from src.python.shared.core.base_repo import BaseRepo
 
 
-async def get_user_with_public_id(public_id: str):
-    return await get_user({'publicId': public_id})
+class UserRepo(BaseRepo):
+    def __init__(self):
+        super().__init__()
 
+    async def get_user_with_public_id(self, public_id: str):
+        return await self.get_unique("user", {'publicId': public_id})
 
-async def get_user_with_email(email: str):
-    return await get_user({'email': email})
+    async def get_user_with_email(self, email: str):
+        return await self.get_unique("user", {'email': email})
 
-
-async def get_user(where_param: dict):
-    return await prisma.user.find_unique(
-        where=where_param
-    )
+    async def verify_email(self, public_id: str):
+        return await self.update("user", {'email_verified': True}, {'publicId': public_id})

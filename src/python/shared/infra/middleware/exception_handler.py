@@ -62,7 +62,7 @@ class ExceptionHandler(BaseHTTPMiddleware):
 
         except UniqueViolationError as e:
             return bad_request({
-                "message": "missing the following fields",
+                "message": "the following values already exists",
                 "fields": e.meta['target']
             })
 
@@ -74,7 +74,8 @@ class ExceptionHandler(BaseHTTPMiddleware):
                 "message": e.error_value,
             })
 
-        except Exception:
+        except Exception as e:
+            print(e)
             return internal_server_error({
                 "message": "An unexpected error occurred",
             })

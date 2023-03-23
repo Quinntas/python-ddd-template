@@ -1,33 +1,16 @@
 from src.python.client.domain.client import Client
-from src.python.client.domain.client_avatar import ClientAvatar
-from src.python.client.domain.client_phone_number import ClientPhoneNumber
-from src.python.shared.core.value_object.value_object import ValueObject
-from src.python.shared.domain.shared_datetime import SharedDatetime
-from src.python.shared.domain.shared_uuid import SharedUUID
+from src.python.shared.core.base_mapper import BaseMapper
+from src.python.shared.utils.model_loader import dict_to_domain_loader, domain_to_dict_loader
 
 
-def to_model(client) -> Client:
-    client_loaded = {
-        'id': client.id,
-        'publicId': SharedUUID(client.publicId),
-        'phone_number': ClientPhoneNumber(client.phone_number),
-        'avatar': ClientAvatar(client.avatar),
-        'userId': client.userId,
-        'createdAt': SharedDatetime(client.createdAt),
-        'updatedAt': SharedDatetime(client.updatedAt)
-    }
-    return Client(**client_loaded)
+class ClientMapper(BaseMapper):
+    def __init__(self):
+        super().__init__()
 
+    @staticmethod
+    def to_domain(raw_client_repo_result: dict) -> Client:
+        return dict_to_domain_loader(Client, raw_client_repo_result.__dict__)
 
-def to_dict(_client: Client) -> dict:
-    return_value = {}
-    client_dict: dict = _client.dict()
-    private_attributes: list = Client.get_private_attributes()
-    for key in client_dict:
-        if key in private_attributes:
-            continue
-        if ValueObject in client_dict[key].__class__.__mro__:
-            return_value[key] = client_dict[key].get_value()
-            continue
-        return_value[key] = client_dict[key]
-    return return_value
+    @staticmethod
+    def to_dict(_client: Client) -> dict:
+        return domain_to_dict_loader(_client, Client)

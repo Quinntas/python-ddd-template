@@ -1,16 +1,11 @@
-from src.python.shared.core.value_object.value_object import ValueObject
 
-pattern: str = "^https:\/\/[0-9A-z.]+.[0-9A-z.]+.[a-z]+$"
+from src.python.shared.core.value_object.value_object import ValueObject
 
 
 class ClientAvatar(ValueObject):
     def __init__(self, avatar: str):
+        super().set_multi_guard()
         self.avatar: str = self.create(avatar)
 
-        super().__int__(self.avatar)
-
-    @staticmethod
-    def create(avatar: str) -> str:
-        # if not re.match(pattern, avatar):
-        #    raise ValueObjectException('avatar link is not correct')
-        return avatar
+    def create(self, avatar: str) -> str:
+        return self.set_value(avatar)

@@ -1,37 +1,16 @@
-from src.python.shared.core.value_object.value_object import ValueObject
-from src.python.shared.domain.shared_datetime import SharedDatetime
-from src.python.shared.domain.shared_uuid import SharedUUID
+from src.python.shared.core.base_mapper import BaseMapper
+from src.python.shared.utils.model_loader import dict_to_domain_loader, domain_to_dict_loader
 from src.python.user.domain.user import User
-from src.python.user.domain.user_email import UserEmail
-from src.python.user.domain.user_name import UserName
-from src.python.user.domain.user_password import UserPassword
-from src.python.user.domain.user_role import UserRole
 
 
-def to_model(user) -> User:
-    user_loaded = {
-        'id': user.id,
-        'publicId': SharedUUID(user.publicId),
-        'name': UserName(user.name),
-        'email': UserEmail(user.email),
-        'email_verified': user.email_verified,
-        'password': UserPassword(user.password, True),
-        'role': UserRole(user.role),
-        'created_at': SharedDatetime(user.createdAt),
-        'updated_at': SharedDatetime(user.updatedAt)
-    }
-    return User(**user_loaded)
+class UserMapper(BaseMapper):
+    def __init__(self):
+        super().__init__()
 
+    @staticmethod
+    def to_domain(raw_user_repo_result: dict) -> User:
+        return dict_to_domain_loader(User, raw_user_repo_result.__dict__)
 
-def to_dict(_user: User) -> dict:
-    return_value = {}
-    user_dict: dict = _user.dict()
-    private_attributes: list = User.get_private_attributes()
-    for key in user_dict:
-        if key in private_attributes:
-            continue
-        if ValueObject in user_dict[key].__class__.__mro__:
-            return_value[key] = user_dict[key].get_value()
-            continue
-        return_value[key] = user_dict[key]
-    return return_value
+    @staticmethod
+    def to_dict(_user: User) -> dict:
+        return domain_to_dict_loader(_user, User)

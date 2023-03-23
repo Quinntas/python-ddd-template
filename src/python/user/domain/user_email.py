@@ -1,19 +1,15 @@
-import re
-
+from src.python.shared.core.guard import Guard
+from src.python.shared.core.regex_list.regex_list import email_regex
 from src.python.shared.core.value_object.value_object import ValueObject
-from src.python.shared.core.value_object.value_object_exception import ValueObjectException
-
-regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
 
 
 class UserEmail(ValueObject):
     def __init__(self, email: str):
+        super().set_multi_guard()
         self.email: str = self.create(email)
 
-        super().__int__(self.email)
-
-    @staticmethod
-    def create(email: str) -> str:
-        if not re.fullmatch(regex, email):
-            raise ValueObjectException('Email is not valid')
-        return email
+    def create(self, email: str) -> str:
+        self.multi_guard.add_result(Guard.against_none("email", email))
+        self.multi_guard.add_result(Guard.against_regex("email", email, email_regex))
+        self.multi_guard.check()
+        return self.set_value(email)

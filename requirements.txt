@@ -1,5 +1,6 @@
 uvicorn~=0.21.0
 python-decouple
+redis
 starlette~=0.26.0.post1
 fastapi~=0.94.0
 passlib~=1.7.4

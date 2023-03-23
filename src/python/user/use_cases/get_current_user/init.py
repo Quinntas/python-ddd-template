@@ -1,0 +1,5 @@
+from src.python.user.use_cases.get_current_user.get_current_user_controller import GetCurrentUserController
+from src.python.user.use_cases.get_current_user.get_current_user_usecase import GetCurrentUserUseCase
+
+get_current_user_usecase = GetCurrentUserUseCase()
+get_current_user_controller = GetCurrentUserController(get_current_user_usecase)

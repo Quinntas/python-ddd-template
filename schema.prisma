@@ -4,9 +4,10 @@ datasource db {
 }
 
 generator client {
-  provider             = "prisma-client-py"
-  recursive_type_depth = -1
-  interface            = "asyncio"
+  provider                    = "prisma-client-py"
+  recursive_type_depth        = -1
+  interface                   = "asyncio"
+  enable_experimental_decimal = true
 }
 
 model User {
@@ -20,13 +21,14 @@ model User {
   role           Role     @default(CLIENT)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  Store          Store?
 }
 
 model Client {
   id           Int      @id @default(autoincrement())
   publicId     String   @unique @default(uuid())
-  phone_number String
-  avatar       String?
+  phone_number String   @unique
+  avatar       String?  @db.Text
   user         User     @relation(fields: [userId], references: [id])
   userId       Int      @unique
   createdAt    DateTime @default(now())
@@ -34,6 +36,5 @@ model Client {
 }
 
 enum Role {
-  ADMIN
   CLIENT
 }

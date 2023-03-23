@@ -1,25 +1,31 @@
 from typing import Type, TypeVar
 
-from fastapi import HTTPException
 from pydantic import BaseModel
+
+from src.python.shared.core.value_object.value_object import ValueObject
 
 Model = TypeVar("Model", bound=BaseModel)
 
 
-def _dict_loader(t: Type[Model], o: dict) -> Model:
-    populated_keys = o.keys()
-    required_keys = set(t.schema()['required'])
-    missing_keys = required_keys.difference(populated_keys)
-    if missing_keys:
-        raise ValueError(f'Required keys missing: {missing_keys}')
-    all_definition_keys = t.schema()['properties'].keys()
-    return t(**{k: v for k, v in o.items() if k in all_definition_keys})
+def dict_to_domain_loader(domain_class: Type[Model], incoming_dict: dict) -> Model:
+    _loader_dict = {}
+    _incoming_dict_keys = incoming_dict.keys()
+    for key, value in domain_class.__annotations__.items():
+        if key not in _incoming_dict_keys:
+            raise ValueError(f"The following required key is missing: {key}")
+        _loader_dict[key] = value(incoming_dict[key])
+    return domain_class(**_loader_dict)
 
 
-def _list_loader(t: Type[Model], o: list) -> Model:
-    keys = t.__fields__.keys()
-    if o is None:
-        raise HTTPException(status_code=400, detail='Someting went wrong.')
-    if len(keys) != len(o):
-        raise ValueError('Missing values')
-    return t(**dict(zip(keys, o)))
+def domain_to_dict_loader(domain_instance: BaseModel, domain_class: Type[Model]) -> dict:
+    return_value = {}
+    domain_instance_dict: dict = domain_instance.dict()
+    private_attributes: list = domain_class.get_private_attributes()
+    for key in domain_instance_dict:
+        if key in private_attributes:
+            continue
+        if ValueObject in domain_instance_dict[key].__class__.__mro__:
+            return_value[key] = domain_instance_dict[key].get_value()
+            continue
+        return_value[key] = domain_instance_dict[key]
+    return return_value
